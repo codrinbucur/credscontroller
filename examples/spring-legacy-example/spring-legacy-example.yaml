@@ -3,7 +3,7 @@ kind: Service
 metadata:
   labels:
     app: spring-legacy-example
-  name: spring-legacy-example 
+  name: spring-legacy-example
 spec:
   ports:
   - port: 8080
@@ -38,83 +38,16 @@ spec:
       annotations:
         vaultproject.io/policies: default,spring-legacy-example
         vaultproject.io/ttl: "24h"
-        pod.beta.kubernetes.io/init-containers: '[
-          {
-            "name": "vault-init",
-            "image": "raffaelespazzoli/credscontroller:0.0.1",
-            "args": ["vault-init"],
-            "imagePullPolicy": "Always",
-            "ports" : [
-              {
-                "containerPort" : 8443,
-                "name" : "init-port",
-                "protocol" : "TCP"
-               }
-            ],
-            "env": [
-              {
-                "name": "POD_NAME",
-                "valueFrom": {"fieldRef": {"fieldPath": "metadata.name", "apiVersion": "v1"}}
-              },
-              {
-                "name": "POD_IP",
-                "valueFrom": {"fieldRef": {"fieldPath": "status.podIP", "apiVersion": "v1"}}
-              },              
-              {
-                "name": "POD_NAMESPACE",
-                "valueFrom": {"fieldRef": {"fieldPath": "metadata.namespace", "apiVersion": "v1"}}
-              },
-              {
-                "name": "VAULT_CACERT",
-                "value": "/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt"
-              },                                           
-              {
-                "name": "VAULT_ADDR",
-                "value": "https://vault.vault-controller.svc.cluster.local:8200"
-              },
-              {
-                "name": "VAULT_CONTROLLER_ADDR",
-                "value": "https://vault-controller.vault-controller.svc.cluster.local:8443"
-              },
-              {
-                "name": "VAULT_CONTROLLER_CACERT",
-                "value": "/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt"
-              },
-              {
-                "name": "VAULT_INIT_PORT",
-                "value": "8443"
-              },
-              {
-                "name": "CREDS_FILE",
-                "value": "/var/run/secrets/vaultproject.io/secret.json"
-              },
-              {
-                "name": "RETRIEVE_SECRET",
-                "value": "secret/spring-legacy-example"
-              },                             
-              {
-                "name": "LOG_LEVEL",
-                "value": "debug"
-              }                             
-            ],
-            "volumeMounts": [
-              {
-                "name": "vault-token",
-                "mountPath": "/var/run/secrets/vaultproject.io"
-              }
-            ]
-          }
-        ]'        
     spec:
       containers:
         - name: spring-legacy-example
           image: "spring-legacy-example/spring-legacy-example:latest"
           imagePullPolicy: Always
-          env: 
+          env:
             - name: SECRET_FILE
-              value: "/var/run/secrets/vaultproject.io/secret.json"    
+              value: "/var/run/secrets/vaultproject.io/secret.json"
             - name: LOGGING_LEVEL_ORG_SPRINGFRAMEWORK
-              value: "DEBUG"                                                                  
+              value: "DEBUG"
           volumeMounts:
             - name: vault-token
               mountPath: "/var/run/secrets/vaultproject.io"
@@ -129,7 +62,52 @@ spec:
               path: /health
               port: 8080
             initialDelaySeconds: 30
-            periodSeconds: 3                          
+            periodSeconds: 3
+      initContainers:
+        - name: vault-init
+          image: raffaelespazzoli/credscontroller:0.0.1
+          args:
+          - vault-init
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 8443
+            name: init-port
+            protocol: TCP
+          env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+                apiVersion: v1
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+                apiVersion: v1
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+                apiVersion: v1
+          - name: VAULT_CACERT
+            value: "/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt"
+          - name: VAULT_ADDR
+            value: https://vault.vault-controller.svc.cluster.local:8200
+          - name: VAULT_CONTROLLER_ADDR
+            value: https://vault-controller.vault-controller.svc.cluster.local:8443
+          - name: VAULT_CONTROLLER_CACERT
+            value: "/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt"
+          - name: VAULT_INIT_PORT
+            value: '8443'
+          - name: CREDS_FILE
+            value: "/var/run/secrets/vaultproject.io/secret.json"
+          - name: RETRIEVE_SECRET
+            value: secret/spring-legacy-example
+          - name: LOG_LEVEL
+            value: debug
+          volumeMounts:
+          - name: vault-token
+            mountPath: "/var/run/secrets/vaultproject.io"
       volumes:
         - name: vault-token
           emptyDir:
