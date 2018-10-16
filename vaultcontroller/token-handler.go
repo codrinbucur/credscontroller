@@ -104,13 +104,9 @@ func tokenRequestHandler(w io.Writer, r *http.Request) (int, error) {
 		return 500, fmt.Errorf("error parsing wrapped token for pod (%s), error: %s", name, err)
 	}
 
-	var initContainers []kapi.Container
-	err = json.Unmarshal([]byte(pod.Annotations["pod.alpha.kubernetes.io/init-containers"]), &initContainers)
-	if err != nil {
-		log.Fatalf("Failed to Unmarshall: %s", err)
-	}
-
-	portStr := strconv.Itoa(int(initContainers[0].Ports[0].ContainerPort))
+	initContainer := pod.Spec.InitContainers[0]
+	portStr := strconv.Itoa(int(initContainer.Ports[0].ContainerPort))
+	
 	log.Printf("Container Port in Init Container: %s", portStr)
 
 	//for some reason this doesn work...
