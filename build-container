@@ -3,4 +3,4 @@
 set -e
 
 ./build
-docker build -t raffaelespazzoli/credscontroller:0.0.1 .
+docker build -t codrinbucur/credscontroller:0.0.1 .
