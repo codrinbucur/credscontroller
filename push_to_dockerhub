@@ -3,5 +3,5 @@
 set -e
 
 ./build-container
-docker login -u raffaelespazzoli -p $DOCKER_PWD
-docker push raffaelespazzoli/credscontroller:0.0.1
+docker login -u codrinbucur -p $DOCKER_PWD
+docker push codrinbucur/credscontroller:0.0.1
