@@ -3,7 +3,7 @@ kind: Service
 metadata:
   labels:
     app: spring-example
-  name: spring-example 
+  name: spring-example
 spec:
   ports:
   - port: 8080
@@ -41,7 +41,7 @@ spec:
         pod.beta.kubernetes.io/init-containers: '[
           {
             "name": "vault-init",
-            "image": "raffaelespazzoli/credscontroller:0.0.1",
+            "image": "cbucur/credscontroller:0.0.1",
             "args": ["vault-init"],
             "imagePullPolicy": "Always",
             "ports" : [
@@ -59,7 +59,7 @@ spec:
               {
                 "name": "POD_IP",
                 "valueFrom": {"fieldRef": {"fieldPath": "status.podIP", "apiVersion": "v1"}}
-              },              
+              },
               {
                 "name": "POD_NAMESPACE",
                 "valueFrom": {"fieldRef": {"fieldPath": "metadata.namespace", "apiVersion": "v1"}}
@@ -67,7 +67,7 @@ spec:
               {
                 "name": "VAULT_CACERT",
                 "value": "/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt"
-              },                                           
+              },
               {
                 "name": "VAULT_ADDR",
                 "value": "https://vault.vault-controller.svc.cluster.local:8200"
@@ -87,7 +87,7 @@ spec:
               {
                 "name": "LOG_LEVEL",
                 "value": "debug"
-              }                             
+              }
             ],
             "volumeMounts": [
               {
@@ -96,7 +96,7 @@ spec:
               }
             ]
           }
-        ]'        
+        ]'
     spec:
       containers:
         - name: spring-example
@@ -104,16 +104,16 @@ spec:
           imagePullPolicy: Always
           env:
             - name: "VAULT_CACERT"
-              value: "/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt"              
+              value: "/var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt"
             - name: "VAULT_HOST"
               value: "vault.vault-controller.svc.cluster.local"
             - name: "VAULT_PORT"
               value: "8200"
             - name: "VAULT_TOKEN_FILE"
-              value: "/var/run/secrets/vaultproject.io/secret.json"                            
-#             determine the context of the generic backend  
+              value: "/var/run/secrets/vaultproject.io/secret.json"
+#             determine the context of the generic backend
             - name: SPRING_CLOUD_VAULT_GENERIC_APPLICATION_NAME
-              value: spring-example 
+              value: spring-example
           livenessProbe:
             httpGet:
               path: /health
@@ -125,7 +125,7 @@ spec:
               path: /health
               port: 8080
             initialDelaySeconds: 60
-            periodSeconds: 3                                                        
+            periodSeconds: 3
           volumeMounts:
             - name: vault-token
               mountPath: "/var/run/secrets/vaultproject.io"

@@ -21,7 +21,7 @@ Build the application
 
 ```
 oc new-project spring-legacy-example
-oc new-build registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift~https://github.com/raffaelespazzoli/credscontroller --context-dir=examples/spring-legacy-example --name spring-legacy-example
+oc new-build registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift~https://github.com/codrinbucur/credscontroller --context-dir=examples/spring-legacy-example --name spring-legacy-example
 ```
 join the network with vault-controller
 ```

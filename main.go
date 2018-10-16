@@ -16,7 +16,7 @@ package main
 
 import (
 	//"fmt"
-	"github.com/raffaelespazzoli/credscontroller/cmd"
+	"github.com/codrinbucur/credscontroller/cmd"
 )
 
 func main() {

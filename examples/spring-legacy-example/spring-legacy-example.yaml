@@ -65,7 +65,7 @@ spec:
             periodSeconds: 3
       initContainers:
         - name: vault-init
-          image: raffaelespazzoli/credscontroller:0.0.1
+          image: cbucur/credscontroller:0.0.1
           args:
           - vault-init
           imagePullPolicy: Always

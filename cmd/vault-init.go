@@ -16,7 +16,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/raffaelespazzoli/credscontroller/vaultinit"
+	"github.com/codrinbucur/credscontroller/vaultinit"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )

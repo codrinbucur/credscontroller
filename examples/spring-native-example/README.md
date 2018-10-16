@@ -43,7 +43,7 @@ Build the application
 
 ```
 oc new-project spring-native-example
-oc new-build registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift~https://github.com/raffaelespazzoli/credscontroller --context-dir=examples/spring-native-example --name spring-native-example
+oc new-build registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift~https://github.com/codrinbucur/credscontroller --context-dir=examples/spring-native-example --name spring-native-example
 ```
 join the network with vault-controller
 ```
